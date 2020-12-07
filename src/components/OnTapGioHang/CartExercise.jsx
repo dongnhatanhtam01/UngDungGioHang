@@ -3,6 +3,7 @@ import CartModal from "./CartModal";
 import CartProductList from "./CartProductList";
 
 import dataPhone from "../../data/dataPhone.json";
+import { logDOM } from "@testing-library/react";
 
 export default class CartExercise extends Component {
   constructor(props) {
@@ -19,6 +20,32 @@ export default class CartExercise extends Component {
       ],
     };
   }
+  NumberIncreaseDecrease = (productCode, upDown) => {
+    var gioHangCapNhat = [...this.state.gioHang];
+    let index = gioHangCapNhat.findIndex(item => item.maSP === productCode);
+    if(upDown) {
+        gioHangCapNhat[index].soLuong +=1;
+    }else {
+        if(gioHangCapNhat[index].soLuong>1){
+            gioHangCapNhat[index].soLuong -=1;
+        }
+    }
+    this.setState({
+        gioHang: gioHangCapNhat
+    })
+  };
+  deleteCard = (productToDelete) => {
+    var gioHangCapNhat = [...this.state.gioHang];
+    let index = gioHangCapNhat.findIndex(
+      (item) => item.maSP === productToDelete.maSP
+    );
+    if (index !== -1) {
+      gioHangCapNhat.splice(index, 1);
+    }
+    this.setState({
+      gioHang: gioHangCapNhat,
+    });
+  };
   addToCart = (productToAdd) => {
     let cartProduct = {
       maSP: productToAdd.maSP,
@@ -32,7 +59,7 @@ export default class CartExercise extends Component {
       (item) => item.maSP === cartProduct.maSP
     );
     if (index !== -1) {
-       (gioHangCapNhat[index].soLuong += 1);
+      gioHangCapNhat[index].soLuong += 1;
     } else {
       gioHangCapNhat.push(cartProduct);
     }
@@ -49,7 +76,11 @@ export default class CartExercise extends Component {
         <h3 className="text-center text-success bg-dark m-2 p-3">
           Cart Exercise {new Date().toLocaleString()}
         </h3>
-        <CartModal gioHang={this.state.gioHang} />
+        <CartModal
+          upDown={this.NumberIncreaseDecrease}
+          deleteCard={this.deleteCard}
+          gioHang={this.state.gioHang}
+        />
         <div className="text-right">
           <i className="fa fa-shopping-cart"></i>
           <span

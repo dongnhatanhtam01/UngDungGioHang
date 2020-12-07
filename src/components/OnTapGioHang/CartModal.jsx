@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class CartModal extends Component {
   render() {
-    const { gioHang } = this.props;
+    const { gioHang, deleteCard, upDown } = this.props;
     return (
       <div>
         <div
@@ -13,7 +13,11 @@ export default class CartModal extends Component {
           aria-labelledby="modelTitleId"
           aria-hidden="true"
         >
-          <div className="modal-dialog" role="document">
+          <div
+            className="modal-dialog"
+            role="document"
+            style={{ maxWidth: "700px" }}
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Cart Array</h5>
@@ -54,15 +58,37 @@ export default class CartModal extends Component {
                               />
                             </td>
                             <td>{spGioHang.tenSP}</td>
-                            <td>{spGioHang.soLuong}</td>
+                            <td>
+                              <button onClick={()=> upDown(spGioHang.maSP, false)}>-</button>
+                              {spGioHang.soLuong}
+                              <button onClick={()=> upDown(spGioHang.maSP, true)}>+</button>
+                            </td>
                             <td>{spGioHang.giaBan}</td>
                             <td>{spGioHang.soLuong * spGioHang.giaBan}</td>
-                            <td></td>
+                            <td>
+                              <button
+                                className="btn-danger"
+                                onClick={() => deleteCard(spGioHang)}
+                              >
+                                XÓa
+                              </button>
+                            </td>
                           </tr>
                         </>
                       );
                     })}
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td  colSpan="5"></td>
+                      <td>Tong Tien: </td>
+                      <td>
+                        {gioHang.reduce((tongTien, sp, index)=>{
+                          return tongTien+=(sp.soLuong*sp.giaBan);
+                        },0).toLocaleString()}
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
               <div className="modal-footer">
